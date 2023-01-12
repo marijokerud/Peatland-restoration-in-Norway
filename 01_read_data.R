@@ -1,0 +1,23 @@
+library(readxl)
+
+
+artslinjer <- read_excel(path = "Data Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
+tv_verdi <- read_excel(path = "Data Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
+plassering <- read_excel(path = "Data Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
+
+# Data cleaning
+library(tidyverse)
+
+# Create community matix for vegan
+community_matrixK<- artslinjer %>% 
+  unite("community", LINJE, AAR) %>% 
+  select(community, Art) %>% 
+  distinct() %>% 
+  mutate(Abundance = 1) %>% 
+  as.data.frame
+
+library(labdsv)
+com_matK<- matrify(community_matrixK) 
+
+
+
