@@ -8,7 +8,14 @@ plassering <- read_excel(path = "Data Kaldvassmyra.xlsx", sheet = "Plassering", 
 # Data cleaning
 library(tidyverse)
 
-# Create community matix for vegan
+# Create community matrix per line
+pinpoint_matrix<- artslinjer %>% 
+  unite("community", Artslinje_id, cm, AAR) %>% 
+  select(community, Art) %>% 
+  mutate(Abundance = 1) %>% 
+  as.data.frame
+
+# Create community matrix per line
 community_matrixK<- artslinjer %>% 
   unite("community", LINJE, AAR) %>% 
   select(community, Art) %>% 
