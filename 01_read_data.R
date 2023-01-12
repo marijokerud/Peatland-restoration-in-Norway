@@ -15,6 +15,8 @@ pinpoint_matrix<- artslinjer %>%
   mutate(Abundance = 1) %>% 
   as.data.frame
 
+
+
 # Create community matrix per line
 community_matrixK<- artslinjer %>% 
   unite("community", LINJE, AAR) %>% 
@@ -24,6 +26,7 @@ community_matrixK<- artslinjer %>%
   as.data.frame
 
 library(labdsv)
+pinpoint_mat<- matrify(pinpoint_matrix)
 com_matK<- matrify(community_matrixK) 
 
 
