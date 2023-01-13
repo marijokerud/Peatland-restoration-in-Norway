@@ -8,9 +8,9 @@ plassering <- read_excel(path = "Data Kaldvassmyra.xlsx", sheet = "Plassering", 
 # Data cleaning
 library(tidyverse)
 
-# Create community matrix per line
+# Create community matrix every 10 m
 pinpoint_matrix<- artslinjer %>% 
-  unite("community", Artslinje_id, cm, AAR) %>% 
+  unite("community", Artslinje_id, AAR) %>% 
   select(community, Art) %>% 
   mutate(Abundance = 1) %>% 
   as.data.frame
