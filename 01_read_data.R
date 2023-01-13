@@ -12,10 +12,14 @@ library(tidyverse)
 pinpoint_matrix<- artslinjer %>% 
   unite("community", Artslinje_id, AAR) %>% 
   select(community, Art) %>% 
+  distinct() %>% 
   mutate(Abundance = 1) %>% 
   as.data.frame
 
-
+library(labdsv)
+pinpoint_mat<- matrify(pinpoint_matrix)
+pinpoint_mat <- pinpoint_mat %>% 
+  select(-Litter)
 
 # Create community matrix per line
 community_matrixK<- artslinjer %>% 
@@ -25,8 +29,7 @@ community_matrixK<- artslinjer %>%
   mutate(Abundance = 1) %>% 
   as.data.frame
 
-library(labdsv)
-pinpoint_mat<- matrify(pinpoint_matrix)
+
 com_matK<- matrify(community_matrixK) 
 
 
