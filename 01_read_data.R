@@ -19,7 +19,7 @@ pinpoint_matrix<- artslinjer %>%
 library(labdsv)
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  select(-Litter)
+  select(-Litter, -litter, -dead_sph, -peat, -dead_wood, -water)
 
 # Create community matrix per line
 community_matrixK<- artslinjer %>% 
