@@ -33,15 +33,23 @@ community_matrixK<- artslinjer %>%
 
 com_matK<- matrify(community_matrixK) 
 
+#AVSTAND fra grøft
 plassering_short <- plassering %>% 
   select(Artslinje_id, Meter_from_ditch)
+#ÅR siden tiltak
 
 #SITE SCORES
-site.scores$site <- rownames(Site.scores)  # create a column of site names, from the rownames of data.scores
-site.scores <- site.scores %>% 
+Site.scores$site <- rownames(Site.scores)  # create a column of site names, from the rownames of data.scores
+site.scores <- Site.scores %>% 
   mutate(Artslinje_id = site) %>% 
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
   mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
   mutate(Artslinje_id = gsub("_2021", "", Artslinje_id)) %>%  #remove _2021
+  mutate(AAR = site) %>% 
+  mutate(AAR = str_sub(AAR, -4)) %>% 
+  mutate(AAR2 = AAR) %>% 
+  mutate(AAR2 = gsub("2015", "0", AAR2)) %>% #Gi verdi 0
+  mutate(AAR2 = gsub("2018", "1", AAR2)) %>% #Gi verdi 1
+  mutate(AAR2 = gsub("2021", "2", AAR2)) %>% #Gi verdi 2
   left_join(plassering_short) %>% 
   slice(1:69)
