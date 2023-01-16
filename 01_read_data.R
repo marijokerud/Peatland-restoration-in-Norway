@@ -14,13 +14,16 @@ pinpoint_matrix<- artslinjer %>%
   unite("community", Artslinje_id, AAR) %>% 
   select(community, Art) %>% 
   distinct() %>% 
-  mutate(Abundance = 1) %>% 
+  mutate(Abundance = 1) %>%
   as.data.frame
 
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
   select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
-  filter(!row_number() %in% c(46)) #REMOVE column with only 0.
+  filter(!row_number() %in% c(10, 46)) #REMOVE column with only 0.
+
+pinpoint_matRED <- pinpoint_mat %>%
+  slice(1:69)
 
 
 # COMMUNITY MATRIX per line
@@ -52,4 +55,4 @@ site.scores <- Site.scores %>%
   mutate(AAR2 = gsub("2018", "1", AAR2)) %>% #Gi verdi 1
   mutate(AAR2 = gsub("2021", "2", AAR2)) %>% #Gi verdi 2
   left_join(plassering_short) %>% 
-  slice(1:69)
+  slice(1:68)
