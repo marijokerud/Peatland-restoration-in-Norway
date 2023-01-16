@@ -19,7 +19,9 @@ pinpoint_matrix<- artslinjer %>%
 
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  select(-Litter, -litter, -dead_sph, -peat, -dead_wood)
+  select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
+  filter(!row_number() %in% c(46)) #REMOVE column with only 0.
+
 
 # COMMUNITY MATRIX per line
 community_matrixK<- artslinjer %>% 
@@ -41,4 +43,5 @@ site.scores <- site.scores %>%
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
   mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
   mutate(Artslinje_id = gsub("_2021", "", Artslinje_id)) %>%  #remove _2021
-  left_join(plassering_short)
+  left_join(plassering_short) %>% 
+  slice(1:70)
