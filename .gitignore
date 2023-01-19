@@ -5,3 +5,6 @@
 .Rdata
 .httr-oauth
 .DS_Store
+#Exluding excel files and pdf
+*.xlsx 
+*.pdf
