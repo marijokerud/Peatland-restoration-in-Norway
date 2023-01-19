@@ -2,7 +2,7 @@ library(vegan)
 
 #Ordinasjon for hver 10 m
 
-pin_NMDS=metaMDS(pinpoint_matRED, # Our community-by-species matrix
+pin_NMDS=metaMDS(pinpoint_matRED2, # Our community-by-species matrix
                k=2, trymax = 1000, distance = "bray") # The number of reduced dimensions
 stressplot(pin_NMDS)
 
@@ -14,7 +14,7 @@ orditorp(pin_NMDS,display="sites",cex=0.8,air=0.8)
 
 #Calculate scores 
 Point.scores <- as.data.frame(scores(pin_NMDS)$sites)  #Using the scores function from vegan to extract the site scores and convert to a data.frame
-
+Point.scores2 <- as.data.frame(scores(pin_NMDS)$sites)
 
 
 
