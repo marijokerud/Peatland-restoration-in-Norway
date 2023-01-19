@@ -23,7 +23,7 @@ pinpoint_mat <- pinpoint_mat %>%
   filter(!row_number() %in% c(10, 46)) #REMOVE column with only 0, 46 and column 10 with Hylocomium.
 
 pinpoint_matRED <- pinpoint_mat %>%
-  slice(1:69)
+  slice(1:68)
 
 
 # COMMUNITY MATRIX per line
