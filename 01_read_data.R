@@ -17,13 +17,34 @@ pinpoint_matrix<- artslinjer %>%
   mutate(Abundance = 1) %>%
   as.data.frame
 
+cm<- c(10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250)
+cm2<- c(120,120,120,120,120,120,120,120,120,120,120,120,
+        250,250,250,250,250,250,250,250,250,250,250,250,250)
+breakdata<- data.frame(cm, cm2)
+
+# COMMUNITY MATRIX every 10 m, 0-120 cm og 130-250 cm
+pinpoint_matrix2<- artslinjer %>% 
+  unite("community", Artslinje_id, AAR) %>% 
+  select(community, Art, cm) %>% 
+  left_join(breakdata) %>% 
+  select(-cm) %>% 
+  distinct() %>% 
+  mutate(Abundance = 1) %>%
+  unite(comunityNEW, community, cm2) %>% 
+  as.data.frame
+
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
   select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
   filter(!row_number() %in% c(10, 46)) #REMOVE column with only 0, 46 and column 10 with Hylocomium.
 
-pinpoint_matRED2 <- pinpoint_mat %>%
-  slice(1:53)
+pinpoint_mat2<- matrify(pinpoint_matrix2)
+pinpoint_mat2 <- pinpoint_mat2 %>% 
+  select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
+  filter(!row_number() %in% c(19,21,55,57,91,92,93)) #remove columns with only 0
+
+pinpoint_matRED2 <- pinpoint_mat2 %>%
+  slice(1:133)
 
 
 # COMMUNITY MATRIX per line
@@ -43,7 +64,8 @@ plassering_short <- plassering %>%
 
 #SITE SCORES
 Point.scores$point <- rownames(Point.scores)  # create a column of site names, from the rownames of data.scores
-point.scores <- Point.scores %>% 
+Point.scores2$point <- rownames(Point.scores2)
+point.scores <- Point.scores2 %>% 
   mutate(Artslinje_id = point) %>% 
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
   mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
