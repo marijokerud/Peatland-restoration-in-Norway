@@ -7,5 +7,5 @@
 .DS_Store
 #Exluding excel files and pdf
 *.xlsx 
-*.word
+*.docx
 *.pdf
