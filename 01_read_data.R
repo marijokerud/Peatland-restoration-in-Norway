@@ -64,9 +64,10 @@ plassering_short <- plassering %>%
 
 #SITE SCORES
 Point.scores$point <- rownames(Point.scores)  # create a column of site names, from the rownames of data.scores
-Point.scores2$point <- rownames(Point.scores2)
-point.scores <- Point.scores2 %>% 
+#Point.scores2$point <- rownames(Point.scores2)
+point.scores <- Point.scores %>% 
   mutate(Artslinje_id = point) %>% 
+  mutate(Artslinje_id = str_sub(Artslinje_id, end = -4))
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
   mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
   mutate(Artslinje_id = gsub("_2021", "", Artslinje_id)) %>%  #remove _2021
@@ -82,3 +83,26 @@ point.scores <- Point.scores2 %>%
                               "2" = "2")) %>% 
   left_join(plassering_short) 
   #slice(1:68) #Remove K5
+
+#SITE SCORES 2
+Point.scores2$point <- rownames(Point.scores2)  # create a column of site names, from the rownames of data.scores
+point.scores <- Point.scores2 %>% 
+  mutate(Artslinje_id = point) %>% 
+  mutate(Artslinje_id = str_sub(Artslinje_id, end = -10))
+  mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
+  mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
+  mutate(Artslinje_id = gsub("_2021", "", Artslinje_id)) %>%  #remove _2021
+  mutate(CM2 = point) %>% 
+  mutate(CM2 = str_sub(CM2, -3)) %>% 
+  mutate(AAR2 = point) %>% 
+  mutate(AAR2 = str_sub(AAR2, end = -5)) %>% 
+  mutate(AAR2 = str_sub(AAR2, -4)) %>% 
+  mutate(AAR = AAR2) %>% 
+  mutate(AAR = gsub("2015", "0", AAR)) %>% #Gi verdi 0
+  mutate(AAR = gsub("2018", "1", AAR)) %>% #Gi verdi 1
+  mutate(AAR = gsub("2021", "2", AAR)) %>% #Gi verdi 2
+  mutate(AAR = recode_factor(AAR,
+                             "0" = "0",
+                             "1" = "1",
+                             "2" = "2")) %>% 
+  left_join(plassering_short) 
