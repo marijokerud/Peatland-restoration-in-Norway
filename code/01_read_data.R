@@ -1,3 +1,4 @@
+library(tidyverse)
 library(readxl)
 
 
@@ -48,7 +49,17 @@ point.scores <- Point.scores %>%
                              "0" = "0",
                              "1" = "1",
                              "2" = "2")) %>% 
-  left_join(plassering_short) 
+  left_join(plassering_short) %>% 
+  slice(1:68)  #Remove K5
+
+K5 <- point.scores %>% 
+  slice(69:73) %
+
+K5mean <- (0.1852915+ -0.3034232+ -0.7542850+ -0.2466182+ -0.2962386)/5
+
+modelK5<- lm(NMDS1~1, K5)
+
+confint(modelK5, level = 0.95)
 
 
 #### COMMUNITY MATRIX every 10 m, 0-120 cm og 130-250 cm
