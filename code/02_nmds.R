@@ -3,7 +3,7 @@ library(vegan)
 #Ordinasjon for hver 10 m
 
 pin_NMDS=metaMDS(pinpoint_mat, # Our community-by-species matrix
-               k=2, trymax = 1000, distance = "jaccard") # The number of reduced dimensions, "bray"
+               k=2, trymax = 1000, distance = "bray") # The number of reduced dimensions, "jaccard"
 stressplot(pin_NMDS)
 
 plot(pin_NMDS)
