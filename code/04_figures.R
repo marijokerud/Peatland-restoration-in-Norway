@@ -1,5 +1,7 @@
 library(ggplot2)
+library(ggrepel)
 
+### POLYNOMIAL REGRESSION PLOT
 ggplot(point.scores, aes(x= Meter_from_ditch, y=NMDS1)) +
   geom_point(shape=1, color= "black", size=2.2) +
   geom_smooth(method='lm', formula= y~x+sqrt(x), se=FALSE, col="black", lwd=1.2) +
@@ -21,3 +23,23 @@ ggplot(point.scores, aes(x= Meter_from_ditch, y=NMDS1)) +
         panel.grid.major.y=element_blank()) 
 
 col= "810f7c" og "8856a7"
+
+### NMDS SITE AND SPECIES PLOT
+ggplot(data=all.point.scores,aes(x=NMDS1,y=NMDS2,)) + 
+  geom_point(aes(fill = linje), shape=21, size = 4) +
+  geom_text_repel(aes(label=Artslinje_id), size=3.5, alpha=0.5, max.overlaps = getOption("ggrepel.max.overlaps", default = 5)) + #add smaller text
+  #geom_polygon(data=all.point.scores, aes(x = NMDS1, y = NMDS2, fill= linje, group=linje), alpha = 0.30) +
+  labs(x = "NMDS1 scores", y= "NMDS2 scores", colour = "Transect") +
+  #scale_color_manual(values=c("#253494", "#2c7fb8", "#41b6c4", "#a1dab4", "#ffffcc")) +
+  scale_fill_manual(values=c("#253494", "#2c7fb8", "#41b6c4", "#a1dab4", "#ffffcc")) +
+  theme_bw() +
+  theme(axis.title.x = element_text(size=14,hjust=0.5),
+        axis.title.y = element_text(size=14,vjust=1),
+        axis.text.x = element_text(size=12,color='black'),
+        axis.text.y = element_text(size=12,color='black'),
+        legend.title = element_text(color="black", size=14),
+        legend.text = element_text(color="black", size=12)) +
+  theme(panel.grid.minor.x=element_blank(),                          #Hide all the vertical gridlines
+        panel.grid.major.x=element_blank(),
+        #panel.grid.minor.y=element_blank(),                           #Hide all the horizontal gridlines
+        panel.grid.major.y=element_blank())
