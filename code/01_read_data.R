@@ -39,6 +39,8 @@ point.scores <- Point.scores %>%
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
   mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
   mutate(Artslinje_id = gsub("_2021", "", Artslinje_id)) %>%  #remove _2021
+  mutate(linje = point) %>% 
+  mutate(linje = str_sub(linje, start = 1, end = 2)) %>% 
   mutate(AAR2 = point) %>% 
   mutate(AAR2 = str_sub(AAR2, -4)) %>% 
   mutate(AAR = AAR2) %>% 
