@@ -67,7 +67,7 @@ confint(modelK5, level = 0.95)
 
 #SPECIES SCORES
 Species.scores$species <- rownames(Species.scores)  # create a column of site names, from the rownames of data.scores
-all.species.scores <- Species.scores %>% 
+species.scores <- Species.scores %>% 
   mutate(speciesNEW = species) %>% 
   mutate(art1 = str_sub(speciesNEW, start = 1, end = 4)) %>%
   mutate(art2 = speciesNEW) %>% 
