@@ -14,6 +14,7 @@ orditorp(pin_NMDS,display="sites",cex=0.8,air=0.8)
 
 #Calculate scores 
 Point.scores <- as.data.frame(scores(pin_NMDS)$sites)  #Using the scores function from vegan to extract the site scores and convert to a data.frame
+Species.scores <- as.data.frame(scores(pin_NMDS)$species)
 #Point.scores2 <- as.data.frame(scores(pin_NMDS)$sites)
 
 

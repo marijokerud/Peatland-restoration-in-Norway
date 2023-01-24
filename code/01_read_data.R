@@ -65,7 +65,7 @@ modelK5<- lm(NMDS1~1, K5)
 
 confint(modelK5, level = 0.95)
 
-#SITE SCORES
+#SPECIES SCORES
 Species.scores$species <- rownames(Species.scores)  # create a column of site names, from the rownames of data.scores
 all.species.scores <- Species.scores %>% 
   mutate(speciesNEW = species) %>% 
