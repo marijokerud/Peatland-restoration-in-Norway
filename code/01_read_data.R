@@ -65,6 +65,17 @@ modelK5<- lm(NMDS1~1, K5)
 
 confint(modelK5, level = 0.95)
 
+#SITE SCORES
+Species.scores$species <- rownames(Species.scores)  # create a column of site names, from the rownames of data.scores
+all.species.scores <- Species.scores %>% 
+  mutate(speciesNEW = species) %>% 
+  mutate(art1 = str_sub(speciesNEW, start = 1, end = 4)) %>%
+  mutate(art2 = speciesNEW) %>% 
+  mutate(art2 = sub("^\\S+\\s+", '', speciesNEW)) %>% 
+  mutate(art2 = str_sub(art2, start = 1, end = 4)) %>% 
+  mutate(species = paste(art1, art2))
+
+
 
 #### COMMUNITY MATRIX every 10 m, 0-120 cm og 130-250 cm
 breakdata <- tibble(
