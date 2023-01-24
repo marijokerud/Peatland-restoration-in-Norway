@@ -33,7 +33,7 @@ plassering_short <- plassering %>%
 
 #SITE SCORES
 Point.scores$point <- rownames(Point.scores)  # create a column of site names, from the rownames of data.scores
-point.scores <- Point.scores %>% 
+all.point.scores <- Point.scores %>% 
   mutate(Artslinje_id = point) %>% 
   mutate(Artslinje_id = str_sub(Artslinje_id, end = -6)) %>% 
   mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
@@ -51,7 +51,9 @@ point.scores <- Point.scores %>%
                              "0" = "0",
                              "1" = "1",
                              "2" = "2")) %>% 
-  left_join(plassering_short) %>% 
+  left_join(plassering_short) 
+
+point.scores <- all.point.scores %>% 
   slice(1:68)  #Remove K5
 
 K5 <- point.scores %>% 
