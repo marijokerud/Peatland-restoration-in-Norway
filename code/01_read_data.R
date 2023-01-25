@@ -10,6 +10,11 @@ plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plasseri
 library(tidyverse)
 library(labdsv)
 
+## Functional group
+fungroupK <- artslinjer %>% 
+  select(Art, Funksjonell_gruppe) %>% 
+  distinct()
+
 #### COMMUNITY MATRIX every 10 m
 pinpoint_matrix<- artslinjer %>% 
   unite("community", Artslinje_id, AAR) %>% 
