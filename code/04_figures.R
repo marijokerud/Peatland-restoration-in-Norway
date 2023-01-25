@@ -8,7 +8,8 @@ ggplot(point.scores, aes(x= Meter_from_ditch, y=NMDS1)) +
   geom_hline(aes(yintercept = -0.2830547), linetype = "dotted", col = "#810f7c") +
   labs(x = "Meters from ditch", y= "NMDS1 scores") +
   theme_bw() +
-  annotate(geom = "rect", xmin= 0, xmax= 50, ymin= -0.69642, ymax= 0.1303105, fill="#810f7c", alpha=0.3) +
+  #annotate(geom = "rect", xmin= 0, xmax= 50, ymin= -0.69642, ymax= 0.1303105, fill="#810f7c", alpha=0.3) +
+  annotate(geom = "rect", xmin= 0, xmax= 50, ymin= -0.615967, ymax= 0.0498576, fill="#810f7c", alpha=0.3) +
   #geom_rect(xmin= 0, xmax= 50, ymin= -0.69642, ymax= 0.1303105, fill= "purple") +
   #geom_tile(aes(y= -0.2830547, x= 25, width=50, height= 0.8267306, fill="red")) +
   #scale_fill_gradient2(low = "white", mid = "purple", high = "white", midpoint = -0.2830547) 
@@ -23,7 +24,7 @@ ggplot(point.scores, aes(x= Meter_from_ditch, y=NMDS1)) +
         #panel.grid.minor.y=element_blank(),                           #Hide all the horizontal gridlines
         panel.grid.major.y=element_blank()) 
 
-#save as 550x650
+#save as 575x650
 
 col= "810f7c" og "8856a7"
 
