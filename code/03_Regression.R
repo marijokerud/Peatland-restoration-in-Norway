@@ -9,24 +9,6 @@ plot(fit1.1, which = 1)
 hist(fit1.1$residuals) # Histogram of residuals
 plot(fit1.1, which = 2)
 
- 
-  
-
- 
-
-
-### JOACHIM metode
-fitxxxx2 <- lm(NMDS1~ Meter_from_ditch + I(Meter_from_ditch^(1/2)), data = point.scores)
-summary(fitxxxx2)
-
-fitxxxx3 <- lm(NMDS1~ Meter_from_ditch + I(Meter_from_ditch^2), data = point.scores)
-summary(fitxxxx3)
-
-par(mfrow = c(1,1))
-plot(NMDS1~Meter_from_ditch ,data = point.scores)
-points(0:50,predict(fitxxxx2,newdata=data.frame(Meter_from_ditch=(0:50))),type='l',col="blue")
-points(0:50,predict(fitxxxx3,newdata=data.frame(Meter_from_ditch=(0:50))),type='l',col="purple")
-
 
 fit1.2 <- lm(NMDS1~ AAR* Meter_from_ditch + I(sqrt(Meter_from_ditch)), data = point.scores)
 summary(fit1.2)
@@ -56,3 +38,19 @@ plot(NMDS2~ AAR*Meter_from_ditch ,data = point.scores)
 plot(fit2.2, which = 1)
 hist(fit2.2$residuals) # Histogram of residuals
 plot(fit2.2, which = 2)
+
+
+
+
+
+### JOACHIM metode
+fitxxxx2 <- lm(NMDS1~ Meter_from_ditch + I(Meter_from_ditch^(1/2)), data = point.scores)
+summary(fitxxxx2)
+
+fitxxxx3 <- lm(NMDS1~ Meter_from_ditch + I(Meter_from_ditch^2), data = point.scores)
+summary(fitxxxx3)
+
+par(mfrow = c(1,1))
+plot(NMDS1~Meter_from_ditch ,data = point.scores)
+points(0:50,predict(fitxxxx2,newdata=data.frame(Meter_from_ditch=(0:50))),type='l',col="blue")
+points(0:50,predict(fitxxxx3,newdata=data.frame(Meter_from_ditch=(0:50))),type='l',col="purple")
