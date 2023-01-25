@@ -1,13 +1,13 @@
 #LOAD DATA
 library(readxl)
+library(tidyverse)
+library(labdsv)
 
 artslinjer <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
 tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
 
 # DATA CLEANING
-library(tidyverse)
-library(labdsv)
 
 ## Functional group
 fungroupK <- artslinjer %>% 
