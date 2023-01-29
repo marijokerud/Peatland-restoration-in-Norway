@@ -2,8 +2,12 @@ library(vegan)
 
 #Ordinasjon for hver 10 m
 
+pinpoint_dist <-vegdist(pinpoint_mat, method = "jaccard", binary = TRUE)
+pinpoint_dist2 <-vegdist(pinpoint_mat, method = "jaccard")
+
 pin_NMDS=metaMDS(pinpoint_mat, # Our community-by-species matrix
                k=2, trymax = 1000, distance = "bray") # The number of reduced dimensions, "jaccard"
+
 stressplot(pin_NMDS)
 
 plot(pin_NMDS)
