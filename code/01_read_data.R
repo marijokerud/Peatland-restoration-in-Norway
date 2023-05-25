@@ -10,14 +10,24 @@ plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plasseri
 
 # DATA CLEANING
 
-#Only Hildremsvatnet remove H from Artslinje_id
-artslinjer <- artslinjer %>% 
+#Only Hildremsvatnet remove H from Artslinje_id and add 0 at the end
+artslinjer2018 <- artslinjer %>% 
   filter(AAR == "2018") %>% 
   rename(Artslinje_id_old = Artslinje_id) %>% 
   mutate(linje1 = str_sub(Artslinje_id_old, start = 1, end = 3)) %>%
   mutate(linje2 = str_sub(Artslinje_id_old, start = 5, end = 5)) %>%
   unite("Artslinje_id", linje1,linje2, sep = "")
-  
+
+artslinjer2018.1 <- artslinjer2018 %>% 
+  filter(Artslinje_id == "H1_0")
+
+artslinjer2018.2 <- artslinjer2018 %>% 
+  slice(38:1173) %>% 
+  mutate(Artslinje_id = paste(Artslinje_id, 0, sep = ""))
+
+artslinjer <- artslinjer %>% 
+  filter(AAR == "2021") %>% 
+  bind_rows(artslinjer2018.1, artslinjer2018.2)
   
 #### COMMUNITY MATRIX every 10 m
 pinpoint_matrix<- artslinjer %>% 
@@ -44,7 +54,7 @@ pinpoint_matKALD <- pinpoint_mat %>%
 #DO NMDS
 
 
-
+#AFTER NMDS
 #AVSTAND fra grøft, gjelder bare Kaldvassmyra
 plassering_short <- plassering %>% 
   select(Artslinje_id, Meter_from_ditch) %>% 
@@ -77,8 +87,8 @@ all.point.scores <- Point.scores %>%
                              "2" = "2")) %>% 
   left_join(plassering_short) 
 
-point.scores <- all.point.scores %>% 
-  slice(1:68)  #Remove K5
+#point.scores <- all.point.scores %>% 
+  #slice(1:68)  #Remove K5
 
 
 #SPECIES SCORES
