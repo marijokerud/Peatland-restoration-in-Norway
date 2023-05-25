@@ -4,7 +4,7 @@ library(tidyverse)
 library(labdsv)
 library(ggplot2)
 
-artslinjerH <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Hildremsvatnet", col_names = TRUE)
+artslinjer <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Data", col_names = TRUE)
 fungroupH <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Sheet1", col_names = TRUE)
 
 artslinjerH <- artslinjerH %>% 
