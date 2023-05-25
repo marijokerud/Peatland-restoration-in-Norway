@@ -9,10 +9,16 @@ tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
 
 # DATA CLEANING
-# Only Hildremsvatnet remove H from Artslinje_id
 
-
-
+#Only Hildremsvatnet remove H from Artslinje_id
+artslinjer <- artslinjer %>% 
+  filter(AAR == "2018") %>% 
+  rename(Artslinje_id_old = Artslinje_id) %>% 
+  mutate(linje1 = str_sub(Artslinje_id_old, start = 1, end = 3)) %>%
+  mutate(linje2 = str_sub(Artslinje_id_old, start = 5, end = 5)) %>%
+  unite("Artslinje_id", linje1,linje2, sep = "")
+  
+  
 #### COMMUNITY MATRIX every 10 m
 pinpoint_matrix<- artslinjer %>% 
   unite("community", Artslinje_id, AAR) %>% 
