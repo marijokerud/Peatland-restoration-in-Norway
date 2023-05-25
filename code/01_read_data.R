@@ -19,10 +19,12 @@ artslinjer2018 <- artslinjer %>%
   unite("Artslinje_id", linje1,linje2, sep = "")
 
 artslinjer2018.1 <- artslinjer2018 %>% 
-  filter(Artslinje_id == "H1_0")
+  filter(Artslinje_id == "H1_0" | Artslinje_id == "H2_0" | Artslinje_id == "H3_0" | Artslinje_id == "H4_0") 
+  
 
 artslinjer2018.2 <- artslinjer2018 %>% 
-  slice(38:1173) %>% 
+  mutate(linje0 = str_sub(Artslinje_id, start = 4, end = 4)) %>%
+  filter(linje0 == "1" | linje0 == "2" | linje0 == "3" | linje0 == "4") %>% 
   mutate(Artslinje_id = paste(Artslinje_id, 0, sep = ""))
 
 artslinjer <- artslinjer %>% 
@@ -41,6 +43,7 @@ pinpoint_matrix<- artslinjer %>%
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
   select(-`Bare peat`, -Litter, -Water, -Wood)
+pinpoint_mat<- pinpoint_mat[-30,] #Remove H3_40_2021 because of zeros, only water and bare peat
 
 #Kaldvassmyra
 pinpoint_mat<- matrify(pinpoint_matrix)
@@ -99,7 +102,7 @@ species.scores <- Species.scores %>%
   mutate(art2 = speciesNEW) %>% 
   mutate(art2 = sub("^\\S+\\s+", '', speciesNEW)) %>% 
   mutate(art2 = str_sub(art2, start = 1, end = 4)) %>% 
-  mutate(species = paste(art1, art2))
+  mutate(species = paste(art1, art2)) 
 
 
 ## Functional group
