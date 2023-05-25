@@ -2,7 +2,7 @@ library(vegan)
 
 #Ordinasjon for hver 10 m
 
-pinpoint_dist <-vegdist(pinpoint_mat, method = "jaccard", binary = TRUE)
+pinpoint_dist <-vegdist(pinpoint_mat, method = "jaccard", binary = TRUE)  #Hvorfor gjorde jeg dette?
 pinpoint_dist2 <-vegdist(pinpoint_mat, method = "jaccard")
 
 pin_NMDS=metaMDS(pinpoint_mat, # Our community-by-species matrix
