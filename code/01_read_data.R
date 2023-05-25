@@ -4,15 +4,14 @@ library(tidyverse)
 library(labdsv)
 
 artslinjer <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
+artslinjer <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Data", col_names = TRUE)
 tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
 
 # DATA CLEANING
+# Only Hildremsvatnet remove H from Artslinje_id
 
-## Functional group
-fungroupK <- artslinjer %>% 
-  select(Art, Funksjonell_gruppe) %>% 
-  distinct()
+
 
 #### COMMUNITY MATRIX every 10 m
 pinpoint_matrix<- artslinjer %>% 
@@ -22,20 +21,35 @@ pinpoint_matrix<- artslinjer %>%
   mutate(Abundance = 1) %>%
   as.data.frame
 
+#Hildremsvatnet
+pinpoint_mat<- matrify(pinpoint_matrix)
+pinpoint_mat <- pinpoint_mat %>% 
+  select(-`Bare peat`, -Litter, -Water, -Wood)
+
+#Kaldvassmyra
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
   select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
   filter(!row_number() %in% c(10, 46)) #REMOVE column with only 0, 46 and column 10 with Hylocomium.
 
-pinpoint_matRED <- pinpoint_mat %>%
+pinpoint_matKALD <- pinpoint_mat %>%
   slice(1:68) #Remove K5
 
-#AVSTAND fra grøft
+#DO NMDS
+
+
+
+#AVSTAND fra grøft, gjelder bare Kaldvassmyra
 plassering_short <- plassering %>% 
-  select(Artslinje_id, Meter_from_ditch)
+  select(Artslinje_id, Meter_from_ditch) %>% 
+  mutate(Meter_from_ditch = gsub("160", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("170", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("180", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("190", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("200", "K5", Meter_from_ditch))   #change distance for K5 to K5
 #ÅR siden tiltak
 
-#SITE SCORES
+#SITE SCORES etter NMDS
 Point.scores$point <- rownames(Point.scores)  # create a column of site names, from the rownames of data.scores
 all.point.scores <- Point.scores %>% 
   mutate(Artslinje_id = point) %>% 
@@ -60,17 +74,6 @@ all.point.scores <- Point.scores %>%
 point.scores <- all.point.scores %>% 
   slice(1:68)  #Remove K5
 
-K5 <- point.scores %>% 
-  slice(69:73) %
-
-K5mean <- c(0.1852915+ -0.3034232+ -0.7542850+ -0.2466182+ -0.2962386)/5
-K5mean<- c(0.1852915, -0.3034232, -0.7542850, -0.2466182, -0.2962386)
-mean(K5mean)
-sd(K5mean)
-
-modelK5<- lm(NMDS1~1, K5)
-
-confint(modelK5, level = 0.95)
 
 #SPECIES SCORES
 Species.scores$species <- rownames(Species.scores)  # create a column of site names, from the rownames of data.scores
@@ -81,6 +84,26 @@ species.scores <- Species.scores %>%
   mutate(art2 = sub("^\\S+\\s+", '', speciesNEW)) %>% 
   mutate(art2 = str_sub(art2, start = 1, end = 4)) %>% 
   mutate(species = paste(art1, art2))
+
+
+## Functional group
+fungroupK <- artslinjer %>% 
+  select(Art, Funksjonell_gruppe) %>% 
+  distinct()
+
+
+
+K5 <- all.point.scores %>% 
+  slice(69:73) 
+
+K5mean <- c(0.1852915+ -0.3034232+ -0.7542850+ -0.2466182+ -0.2962386)/5
+K5mean<- c(0.1852915, -0.3034232, -0.7542850, -0.2466182, -0.2962386)
+mean(K5mean)
+sd(K5mean)
+
+modelK5<- lm(NMDS1~1, K5)
+
+confint(modelK5, level = 0.95)
 
 
 
