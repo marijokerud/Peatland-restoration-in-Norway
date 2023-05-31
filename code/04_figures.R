@@ -1,6 +1,6 @@
 library(ggplot2)
 library(ggrepel)
-library(wesanderson)
+#library(wesanderson)
 
 #KALDVASSMYRA
 ### POLYNOMIAL REGRESSION PLOT
@@ -68,7 +68,7 @@ mycolors <- c("black", "black", "black", "black")
 ggplot(data=all.point.scores, aes(x=NMDS1, y=NMDS2)) + 
   geom_point(data=all.point.scores, aes(x=NMDS1, y=NMDS2, color = linje, fill = linje, shape = AAR2), size = 4) +  
   labs(x = "NMDS1 scores", y= "NMDS2 scores") + 
-  scale_color_manual(values=myfill, name="Transect") +
+  scale_color_manual(values=mycolors, name="Transect") +
   scale_fill_manual(values=myfill, name="Transect") +
   scale_shape_manual(values = c(21,22), labels=c("Before","Two years after"), name="Restoration") +
   theme_bw() +
