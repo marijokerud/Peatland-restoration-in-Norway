@@ -3,7 +3,7 @@ library(readxl)
 library(tidyverse)
 library(labdsv)
 
-artslinjer <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
+artslinjer.raw <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
 artslinjer <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Data", col_names = TRUE)
 tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
@@ -30,6 +30,21 @@ artslinjer2018.2 <- artslinjer2018 %>%
 artslinjer <- artslinjer %>% 
   filter(AAR == "2021") %>% 
   bind_rows(artslinjer2018.1, artslinjer2018.2)
+
+
+#KALDVASSMYRA M 2023 OG UTEN 2021
+
+artslinjer <- artslinjer.raw %>% 
+  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2, Treatment) %>% 
+  filter(AAR== 2015 | AAR== 2018) %>% 
+  bind_rows(kaldvassmyra2023)
+
+#sjekk artsnavn
+artsnavn <-artslinjer %>% 
+  select(Art) %>% 
+  unique()
+
+
   
 #### COMMUNITY MATRIX every 10 m
 pinpoint_matrix<- artslinjer %>% 
@@ -48,8 +63,8 @@ pinpoint_mat<- pinpoint_mat[-30,] #Remove H3_40_2021 because of zeros, only wate
 #Kaldvassmyra
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  select(-Litter,-litter,-dead_sph,-dead_wood,-peat, -water) %>% 
-  filter(!row_number() %in% c(10, 46)) #REMOVE column with only 0, 46 and column 10 with Hylocomium.
+  select(-`dead wood`, -litter, -`open water`) %>% #-Litter, -dead_sph,-dead_wood,-peat, -water
+  filter(!row_number() %in% c(54)) # #REMOVE column with only 0s: K3_40_2018 (66)  %in% c(10, 66))
 
 pinpoint_matKALD <- pinpoint_mat %>%
   slice(1:68) #Remove K5
