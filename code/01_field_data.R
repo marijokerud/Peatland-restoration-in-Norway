@@ -9,12 +9,23 @@ feltskjema_trysil <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet 
 
 # DATA CLEANING
 
+
 #KALDVASSMYRA
 kaldvassmyra2023 <- feltskjema_kaldvassmyra %>%
   gather("CM", "presence", -year, -site, -field_analyst, -transect_id, -species) %>% 
   mutate("cm"= paste(CM, 0, sep = "")) %>% 
+  mutate(cm = as.numeric(cm)) %>% 
+  mutate(species = gsub("Betula nana B.", "Betula nana", species)) %>% 
+  mutate(species = gsub("Betula nana C.", "Betula nana", species)) %>%
+  mutate(species = gsub("Betula nana F.", "Betula nana", species)) %>%
+  mutate(species = gsub("Picea abies B.", "Picea abies", species)) %>%
+  mutate(species = gsub("Pinus sylvestris B.", "Pinus sylvestris", species)) %>%
+  mutate(species = gsub("Pinus sylvestris C.", "Pinus sylvestris", species)) %>%
+  mutate(AAR2 = 6) %>% 
+  mutate(Treatment = "after3") %>% 
   drop_na() %>% 
-  select(-CM, -presence)
+  select(-CM, -presence, -field_analyst) %>% 
+  rename(AAR = year, OMRADE = site, Artslinje_id = transect_id, Art = species)
 
 #ÅURSTADMÅSAN
 aurstadmosan2023 <- feltskjema_aurstadmosan %>%
@@ -28,12 +39,5 @@ trysil2023 <- feltskjema_trysil %>%
   mutate(presence = as.numeric(gsub("x", 1, presence))) %>% 
   drop_na() %>% 
   select(-presence)
-
-
-  filter(AAR == "2018") %>% 
-  rename(Artslinje_id_old = Artslinje_id) %>% 
-  mutate(linje1 = str_sub(Artslinje_id_old, start = 1, end = 3)) %>%
-  mutate(linje2 = str_sub(Artslinje_id_old, start = 5, end = 5)) %>%
-  unite("Artslinje_id", linje1,linje2, sep = "")
 
   
