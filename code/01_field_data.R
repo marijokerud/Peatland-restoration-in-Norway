@@ -9,6 +9,15 @@ feltskjema_trysil <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet 
 
 # DATA CLEANING
 
+#ÅURSTADMÅSAN
+aurstadmosan2023 <- feltskjema_aurstadmosan %>%
+  gather("cm", "presence", -year, -site, -field_analyst, -transect_id, -species) %>% 
+  mutate(site = gsub("Aurstadmasan", "Aurstadmosen", site)) %>%
+  mutate(cm = as.numeric(cm)) %>% 
+  drop_na() %>% 
+  select(-presence, -field_analyst) %>% 
+  rename(AAR = year, OMRADE = site, Artslinje_id = transect_id, Art = species)
+
 
 #KALDVASSMYRA
 kaldvassmyra2023 <- feltskjema_kaldvassmyra %>%
@@ -27,11 +36,6 @@ kaldvassmyra2023 <- feltskjema_kaldvassmyra %>%
   select(-CM, -presence, -field_analyst) %>% 
   rename(AAR = year, OMRADE = site, Artslinje_id = transect_id, Art = species)
 
-#ÅURSTADMÅSAN
-aurstadmosan2023 <- feltskjema_aurstadmosan %>%
-  gather("cm", "presence", -year, -site, -field_analyst, -transect_id, -species) %>% 
-  drop_na() %>% 
-  select(-presence)
 
 #TRYSIL
 trysil2023 <- feltskjema_trysil %>%
