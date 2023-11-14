@@ -1,4 +1,4 @@
-
+library(lme4)
 
 fit1.1 <- lm(NMDS1~ AAR * Meter_from_ditch + I(sqrt(Meter_from_ditch)), data = point.scores)
 summary(fit1.1)
@@ -30,7 +30,7 @@ plot(fit1.3, which = 1)
 hist(fit1.3$residuals) # Histogram of residuals
 plot(fit1.3, which = 2)
 
-anova(fit1.2, fit1.3)
+anova(fit1.1, fit1.3)
 
 
 fit2.1 <- lm(NMDS2~ AAR+ Meter_from_ditch + I(sqrt(Meter_from_ditch)), data = point.scores)
