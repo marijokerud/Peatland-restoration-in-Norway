@@ -159,19 +159,33 @@ fungroupK <- artslinjer %>%
   select(Art, Funksjonell_gruppe) %>% 
   distinct()
 
+#AURSTADMÅSAN
+A5 <- all.point.scores %>% 
+  slice(62:76)
 
+mean5 <- all.point.scores %>% 
+  slice(62:76) %>% 
+  summarise(avg = mean(NMDS1))
+
+sd5 <- all.point.scores %>% 
+  slice(62:76) %>% 
+  summarise(SD= sd(NMDS1))
 
 K5 <- all.point.scores %>% 
-  slice(69:73) 
+  slice(79:83) 
+
+mean5 <- all.point.scores %>% 
+  slice(79:83) %>% 
+  summarise(avg = mean(NMDS1))
 
 K5mean <- c(0.1852915+ -0.3034232+ -0.7542850+ -0.2466182+ -0.2962386)/5
 K5mean<- c(0.1852915, -0.3034232, -0.7542850, -0.2466182, -0.2962386)
 mean(K5mean)
 sd(K5mean)
 
-modelK5<- lm(NMDS1~1, K5)
+model5<- lm(NMDS1~1, K5)
 
-confint(modelK5, level = 0.95)
+confint(model5, level = 0.95)
 
 
 
