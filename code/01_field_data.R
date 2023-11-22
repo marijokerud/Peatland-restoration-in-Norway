@@ -42,6 +42,11 @@ trysil2023 <- feltskjema_trysil %>%
   gather("cm", "presence", -transect_id, -species) %>% 
   mutate(presence = as.numeric(gsub("x", 1, presence))) %>% 
   drop_na() %>% 
-  select(-presence)
+  select(-presence) %>% 
+  mutate(AAR = as.numeric("2023")) %>% 
+  mutate(OMRADE = "Hisåsen Regnåsen") %>%
+  mutate(cm = as.numeric(cm)) %>%
+  rename(Artslinje_id = transect_id, Art = species) %>% 
+  select(AAR, OMRADE, Artslinje_id, Art, cm)
 
   
