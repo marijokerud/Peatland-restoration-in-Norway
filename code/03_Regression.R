@@ -52,7 +52,7 @@ plot(fit2.2, which = 1)
 hist(fit2.2$residuals) # Histogram of residuals
 plot(fit2.2, which = 2)
 
-
+anova(fit2.1, fit2.2)
 
 
 
