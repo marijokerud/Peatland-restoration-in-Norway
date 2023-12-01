@@ -12,6 +12,7 @@
 *.png
 *.jpeg
 *.tiff
+*.tif
 *.psd
 *.csv
 *.txt
