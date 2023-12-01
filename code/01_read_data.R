@@ -8,11 +8,8 @@ Sys.setlocale("LC_ALL", "Norwegian") #works with æøå or use "no_NB.utf8"
 
 artslinjer.raw <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
 artslinjer.raw <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Data", col_names = TRUE)
-
-artslinjer.raw <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet = "Aurstadmåsan", col_names = TRUE)
-artsnavn <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet = "artsnavn1", col_names = TRUE)
-
-tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
+#artsnavn <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet = "artsnavn1", col_names = TRUE)
+#tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
 
 # DATA CLEANING
@@ -33,41 +30,14 @@ artslinjer2018.2 <- artslinjer2018 %>%
   filter(linje0 == "1" | linje0 == "2" | linje0 == "3" | linje0 == "4") %>% 
   mutate(Artslinje_id = paste(Artslinje_id, 0, sep = ""))
 
-artslinjer <- artslinjer %>% 
+artslinjer <- artslinjer.raw %>% 
   filter(AAR == "2021") %>%  #ADD # for analysis for the report
-  bind_rows(artslinjer2018.1, artslinjer2018.2)
+  bind_rows(artslinjer2018.1, artslinjer2018.2) %>% 
+  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2)
 
-
-#KALDVASSMYRA M 2023 OG UTEN 2021
+#Kaldvassmyra
 artslinjer <- artslinjer.raw %>% 
-  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2, Treatment) %>% 
-  filter(AAR== 2015 | AAR== 2018) %>% 
-  bind_rows(kaldvassmyra2023)
-
-#sjekk artsnavn
-artsnavntest <-artslinjer %>% 
-  select(Art) %>% 
-  unique()
-
-
-#AURSTADMÅSAN M 2023 OG UTEN 2021
-artslinjer <- artslinjer.raw %>% 
-  select(AAR, OMRADE, Artslinje_id, Art, cm) %>%
-  rename(Artslinje_id_old = Artslinje_id) %>% 
-  mutate(linje1 = str_sub(Artslinje_id_old, start = 1, end = 3)) %>%
-  mutate(linje2 = str_sub(Artslinje_id_old, start = 5, end = 6)) %>%
-  unite("Artslinje_id", linje1,linje2, sep = "") %>% 
-  filter(AAR== 2015 | AAR== 2018) %>% 
-  right_join(artsnavn, by ="Art") %>% 
-  select(AAR, OMRADE, Artslinje_id, Art2, cm) %>%
-  rename(Art = Art2) %>% 
-  bind_rows(aurstadmosan2023) 
-
-#sjekk artsnavn
-artsnavntest <-artslinjer %>% 
-  select(Art2) %>% 
-  unique()
-
+  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2, Treatment)
 
 
 #### COMMUNITY MATRIX every 10 m
@@ -81,28 +51,27 @@ pinpoint_matrix<- artslinjer %>%
 #Hildremsvatnet
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  select(-`Bare peat`, -Litter, -Water, -Wood)
-pinpoint_mat<- pinpoint_mat[-30,] #Remove H3_40_2021 because of zeros, only water and bare peat
+  select(-'Bare peat', -Litter, -Water, -Wood) %>% 
+  filter(!row_number() %in% c(30)) #REMOVE column with only 0s: H3_40_2021 consists only water and bare peat
 
 #Kaldvassmyra
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  #select(-litter, -water) %>% #-Litter, -dead_sph,-dead_wood,-peat, -water #  #-Litter, -dead_sph,-dead_wood,-peat, -water
-  select(-`dead wood`, -litter, -`open water`, -Strø, -Torv, -water) %>%
-  filter(!row_number() %in% c(54)) %>%  # #REMOVE column with only 0s: K3_40_2018 (66)  %in% c(10, 66))
-  slice(1:78)  #Remove K5
+  select(-dead_sph,-dead_wood,-litter,-Litter,-peat, -water) %>% 
+  filter(!row_number() %in% c(46)) # #REMOVE column with only 0s: K3_40_2018
 
-pinpoint_matKALD <- pinpoint_mat %>%
-  slice(1:68) #Remove K5
-
-#Aurstadmåsan
-pinpoint_mat<- matrify(pinpoint_matrix)
-pinpoint_mat <- pinpoint_mat %>% 
-  #select(-litter, -water) %>% #-Litter, -dead_sph,-dead_wood,-peat, -water #  #-Litter, -dead_sph,-dead_wood,-peat, -water
-  select(-dead_sph, -peat, -Strø, -Torv) %>%
-  filter(!row_number() %in% c(9,12,27,55))  # #REMOVE column with only 0s: A1_20_2023 (9), A1_30_2023 (12), A2_40_2023 (27), A4_30_2023 (55)
 
 #DO NMDS
+
+
+
+
+
+
+
+
+
+
 
 
 #AFTER NMDS

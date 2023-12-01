@@ -7,56 +7,58 @@ library(xlsx)
 Sys.setlocale("LC_ALL", "Norwegian") #works with æøå or use "no_NB.utf8"
 
 artslinjer.raw <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Data", col_names = TRUE)
-
-feltskjema_kaldvassmyra <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet = "Kaldvassmyra2023", col_names = TRUE)
-tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
+artslinjer.raw <- read_excel(path = "data/Data_Hildremsvatnet.xlsx", sheet = "Data", col_names = TRUE)
+#artsnavn <- read_excel(path = "data/Data_myr_restaurering.xlsx", sheet = "artsnavn1", col_names = TRUE)
+#tv_verdi <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Ind.verdi_GAD_TV",range = "A1:L53" , col_names = TRUE)
 plassering <- read_excel(path = "data/Data_Kaldvassmyra.xlsx", sheet = "Plassering", col_names = TRUE)
 
 # DATA CLEANING
-kaldvassmyra2023 <- feltskjema_kaldvassmyra %>%
-  gather("CM", "presence", -year, -site, -field_analyst, -transect_id, -species) %>% 
-  mutate("cm"= paste(CM, 0, sep = "")) %>% 
-  mutate(cm = as.numeric(cm)) %>% 
-  mutate(species = gsub("Betula nana B.", "Betula nana", species)) %>% 
-  mutate(species = gsub("Betula nana C.", "Betula nana", species)) %>%
-  mutate(species = gsub("Betula nana F.", "Betula nana", species)) %>%
-  mutate(species = gsub("Picea abies B.", "Picea abies", species)) %>%
-  mutate(species = gsub("Pinus sylvestris B.", "Pinus sylvestris", species)) %>%
-  mutate(species = gsub("Pinus sylvestris C.", "Pinus sylvestris", species)) %>%
-  mutate(AAR2 = 6) %>% 
-  mutate(Treatment = "after3") %>% 
-  drop_na() %>% 
-  select(-CM, -presence, -field_analyst) %>% 
-  rename(AAR = year, OMRADE = site, Artslinje_id = transect_id, Art = species)
 
+#Only Hildremsvatnet remove H from Artslinje_id and add 0 at the end
+artslinjer2018 <- artslinjer.raw %>% 
+  filter(AAR == "2018") %>% 
+  rename(Artslinje_id_old = Artslinje_id) %>% 
+  mutate(linje1 = str_sub(Artslinje_id_old, start = 1, end = 3)) %>%
+  mutate(linje2 = str_sub(Artslinje_id_old, start = 5, end = 5)) %>%
+  unite("Artslinje_id", linje1,linje2, sep = "")
 
-#KALDVASSMYRA M 2023 OG UTEN 2021
+artslinjer2018.1 <- artslinjer2018 %>% 
+  filter(Artslinje_id == "H1_0" | Artslinje_id == "H2_0" | Artslinje_id == "H3_0" | Artslinje_id == "H4_0") 
+  
+artslinjer2018.2 <- artslinjer2018 %>% 
+  mutate(linje0 = str_sub(Artslinje_id, start = 4, end = 4)) %>%
+  filter(linje0 == "1" | linje0 == "2" | linje0 == "3" | linje0 == "4") %>% 
+  mutate(Artslinje_id = paste(Artslinje_id, 0, sep = ""))
+
 artslinjer <- artslinjer.raw %>% 
-  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2, Treatment) %>% 
-  filter(AAR== 2015 | AAR== 2018) %>% 
-  bind_rows(kaldvassmyra2023)
+  filter(AAR == "2021") %>%  #ADD # for analysis for the report
+  bind_rows(artslinjer2018.1, artslinjer2018.2) %>% 
+  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2)
 
-
-#sjekk artsnavn
-artsnavntest <-artslinjer %>% 
-  select(Art) %>% 
-  unique()
+#Kaldvassmyra
+artslinjer <- artslinjer.raw %>% 
+  select(AAR, OMRADE, Artslinje_id, Art, cm, AAR2, Treatment)
 
 
 #### COMMUNITY MATRIX every 10 m
-pinpoint_matrix<- artslinjer  %>% #OR artslinjerFULL for NMDS plot OR artslinjer for regression analysis and plot
+pinpoint_matrix<- artslinjer %>% 
   unite("community", Artslinje_id, AAR) %>% 
   select(community, Art) %>% 
   distinct() %>% 
   mutate(Abundance = 1) %>%
   as.data.frame
 
-
+#Hildremsvatnet
 pinpoint_mat<- matrify(pinpoint_matrix)
 pinpoint_mat <- pinpoint_mat %>% 
-  select(-`dead wood`, -litter, -`open water`, -Strø, -Torv, -water) %>%
-  filter(!row_number() %in% c(54))  # #REMOVE column with only 0s: K3_40_2018 
+  select(-'Bare peat', -Litter, -Water, -Wood) %>% 
+  filter(!row_number() %in% c(30)) #REMOVE column with only 0s: H3_40_2021 consists only water and bare peat
 
+#Kaldvassmyra
+pinpoint_mat<- matrify(pinpoint_matrix)
+pinpoint_mat <- pinpoint_mat %>% 
+  select(-dead_sph,-dead_wood,-litter,-Litter,-peat, -water) %>% 
+  filter(!row_number() %in% c(46)) # #REMOVE column with only 0s: K3_40_2018
 
 
 #DO NMDS
@@ -66,13 +68,93 @@ pinpoint_mat <- pinpoint_mat %>%
 
 
 
-#####################################################################
+
+
+
+
+
+
+#AFTER NMDS
+#AVSTAND fra grøft, gjelder bare Kaldvassmyra
+plassering_short <- plassering %>% 
+  select(Artslinje_id, Meter_from_ditch) %>% 
+  mutate(Meter_from_ditch = gsub("160", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("170", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("180", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("190", "K5", Meter_from_ditch)) %>%  #change distance for K5 to K5
+  mutate(Meter_from_ditch = gsub("200", "K5", Meter_from_ditch))   #change distance for K5 to K5
+#ÅR siden tiltak
+
+#SITE SCORES etter NMDS
+Point.scores$point <- rownames(Point.scores)  # create a column of site names, from the rownames of data.scores
+all.point.scores <- Point.scores %>% 
+  mutate(Artslinje_id = point) %>% 
+  mutate(Artslinje_id = str_sub(Artslinje_id, end = -6)) %>% 
+  #mutate(Artslinje_id = gsub("_2015", "", Artslinje_id)) %>% #remove _2015
+  #mutate(Artslinje_id = gsub("_2018", "", Artslinje_id)) %>% #remove _2018
+  #mutate(Artslinje_id = gsub("_2023", "", Artslinje_id)) %>%  #remove _2021
+  mutate(linje = point) %>% 
+  mutate(linje = str_sub(linje, start = 1, end = 2)) %>% 
+  mutate(AAR2 = point) %>% 
+  mutate(AAR2 = str_sub(AAR2, -4)) %>% 
+  mutate(AAR = AAR2) %>% 
+  mutate(AAR = gsub("2015", "0", AAR)) %>% #Gi verdi 0
+  mutate(AAR = gsub("2018", "1", AAR)) %>% #Gi verdi 1
+  mutate(AAR = gsub("2023", "2", AAR)) %>% #Gi verdi 2
+  mutate(AAR = recode_factor(AAR,
+                             "0" = "0",
+                             "1" = "1",
+                             "2" = "2")) %>% 
+  left_join(plassering_short) %>% 
+  mutate(Meter_from_ditch = as.numeric(Meter_from_ditch)) #ADD # when creating the figure
+
+#point.scores <- all.point.scores %>% 
+  #slice(1:68)  #Remove K5
+
+
+#SPECIES SCORES
+Species.scores$species <- rownames(Species.scores)  # create a column of site names, from the rownames of data.scores
+species.scores <- Species.scores %>% 
+  mutate(speciesNEW = species) %>% 
+  mutate(art1 = str_sub(speciesNEW, start = 1, end = 4)) %>%
+  mutate(art2 = speciesNEW) %>% 
+  mutate(art2 = sub("^\\S+\\s+", '', speciesNEW)) %>% 
+  mutate(art2 = str_sub(art2, start = 1, end = 4)) %>% 
+  mutate(species = paste(art1, art2)) 
+
+
 ## Functional group
 fungroupK <- artslinjer %>% 
   select(Art, Funksjonell_gruppe) %>% 
   distinct()
 
+#AURSTADMÅSAN
+A5 <- all.point.scores %>% 
+  slice(62:76)
 
+mean5 <- all.point.scores %>% 
+  slice(62:76) %>% 
+  summarise(avg = mean(NMDS1))
+
+sd5 <- all.point.scores %>% 
+  slice(62:76) %>% 
+  summarise(SD= sd(NMDS1))
+
+K5 <- all.point.scores %>% 
+  slice(79:83) 
+
+mean5 <- all.point.scores %>% 
+  slice(79:83) %>% 
+  summarise(avg = mean(NMDS1))
+
+K5mean <- c(0.1852915+ -0.3034232+ -0.7542850+ -0.2466182+ -0.2962386)/5
+K5mean<- c(0.1852915, -0.3034232, -0.7542850, -0.2466182, -0.2962386)
+mean(K5mean)
+sd(K5mean)
+
+model5<- lm(NMDS1~1, K5)
+
+confint(model5, level = 0.95)
 
 
 
@@ -150,13 +232,6 @@ point.scores <- Point.scores2 %>%
   write.xlsx(artslinjer, file= "data/Data_Aurstadmosan.xlsx", sheetName = "Sheet1", 
              col.names = TRUE, row.names = TRUE, append = FALSE)
   artslinjer <- read_excel(path = "data/Data_Aurstadmosan.xlsx", sheet = "Sheet1", col_names = TRUE)
-  
-  
-  #UTEN K5 for regresjonsplott
-  artslinjer <- artslinjerFULL %>% 
-    mutate(linje = Artslinje_id) %>% 
-    mutate(linje = str_sub(linje, start = 1, end = 2)) %>% 
-    filter(linje== "K1" | linje== "K2" | linje== "K3" | linje== "K4")
   
   
   
